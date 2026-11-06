@@ -1,0 +1,914 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tan, Kyle | Academic E-Portfolio (BSIT)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.8); }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .page-section { display: block !important; page-break-after: always; }
+            .print-full-width { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Navigation Header -->
+    <header class="no-print sticky top-0 z-40 bg-slate-900/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-800 text-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-500/20">
+                    KT
+                </div>
+                <div>
+                    <h1 class="font-bold text-base leading-tight tracking-tight text-white flex items-center gap-2">
+                        Tan, Kyle
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-medium border border-brand-500/30">BSIT</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">University of the Immaculate Conception</p>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Items -->
+            <nav class="hidden lg:flex items-center space-x-1 font-medium text-xs">
+                <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-house"></i> Home
+                </button>
+                <button onclick="navigateTo('prelims')" id="nav-prelims" class="nav-btn px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-bookmark text-amber-400"></i> Prelims
+                </button>
+                <button onclick="navigateTo('midterm')" id="nav-midterm" class="nav-btn px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-layer-group text-teal-400"></i> Midterm
+                </button>
+                <button onclick="navigateTo('finals')" id="nav-finals" class="nav-btn px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy text-indigo-400"></i> Finals
+                </button>
+                <button onclick="navigateTo('reflection')" id="nav-reflection" class="nav-btn px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-feather text-brand-400"></i> Synthesis Essay
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <!-- Owner Mode Button -->
+                <button id="adminLockBtn" onclick="handleAdminLockToggle()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold hover:bg-amber-500/20 transition-colors">
+                    <i id="adminLockIcon" class="fa-solid fa-lock"></i> <span id="adminLockText">Owner Access</span>
+                </button>
+                <button id="exportLinksBtn" onclick="exportLinksBackup()" class="hidden flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-brand-400 text-xs font-semibold border border-slate-700 transition-colors" title="Backup Saved Links">
+                    <i class="fa-solid fa-download"></i> Backup Links
+                </button>
+                <button onclick="toggleSearchModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Search Outputs">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button onclick="window.print()" class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition-colors border border-slate-700">
+                    <i class="fa-solid fa-print text-brand-400"></i> Print / PDF
+                </button>
+                <button id="themeToggle" onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 transition-colors" title="Toggle Theme">
+                    <i class="fa-solid fa-sun text-lg"></i>
+                </button>
+                <button onclick="toggleMobileNav()" class="lg:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobileNav" class="hidden lg:hidden border-t border-slate-800 bg-slate-950 p-4 space-y-2 text-sm">
+            <button onclick="navigateTo('home'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> Home
+            </button>
+            <button onclick="navigateTo('prelims'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-amber-400">
+                <i class="fa-solid fa-bookmark"></i> Prelims (5 Items)
+            </button>
+            <button onclick="navigateTo('midterm'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-teal-400">
+                <i class="fa-solid fa-layer-group"></i> Midterm (6 Items)
+            </button>
+            <button onclick="navigateTo('finals'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-indigo-400">
+                <i class="fa-solid fa-trophy"></i> Finals (4 Items)
+            </button>
+            <button onclick="navigateTo('reflection'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 flex items-center gap-2 text-brand-400 font-bold">
+                <i class="fa-solid fa-feather"></i> Synthesis Essay
+            </button>
+        </div>
+    </header>
+
+    <!-- Modal for Security Unlock -->
+    <div id="adminPinModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4 text-center">
+            <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto text-xl border border-amber-500/30">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Owner Authorization</h3>
+                <p class="text-xs text-slate-400 mt-1">Enter your Owner Security Passcode to edit document URLs.</p>
+            </div>
+            <input type="password" id="adminPinInput" maxlength="8" placeholder="Enter Security Code" onkeyup="if(event.key==='Enter') verifyAdminPin()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-center text-sm font-mono text-white outline-none focus:border-amber-500 tracking-widest">
+            <div id="pinErrorMsg" class="hidden text-xs text-rose-400 font-semibold">Incorrect Passcode. Access Denied.</div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeAdminPinModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl">Cancel</button>
+                <button onclick="verifyAdminPin()" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl">Unlock Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Custom File Links -->
+    <div id="linkModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-link text-brand-400"></i> Edit Deliverable File Link
+                </h3>
+                <button onclick="closeLinkModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div>
+                <label id="modalOutputTitle" class="block text-xs font-semibold text-slate-300 mb-1">Output Title</label>
+                <p class="text-xs text-slate-400 mb-3">Paste your Google Drive, PDF, or OneDrive link below to connect your artifact file.</p>
+                <input type="text" id="modalUrlInput" placeholder="https://drive.google.com/..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 outline-none focus:border-brand-500 font-mono">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeLinkModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl">Cancel</button>
+                <button onclick="saveCustomLink()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-xl">Save Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-start justify-center pt-20 px-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 text-lg"></i>
+                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search TLA, AT, or Reflection papers across 1st Semester..." class="bg-transparent text-slate-100 placeholder-slate-500 outline-none w-full text-sm">
+                <button onclick="toggleSearchModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="searchResults" class="max-h-96 overflow-y-auto p-4 space-y-3">
+                <p class="text-xs text-slate-500 text-center py-4">Start typing to search outputs...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= PAGE 1: HOME COVER ================= -->
+        <section id="page-home" class="page-section space-y-10">
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 p-8 sm:p-12 shadow-2xl">
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-graduation-cap"></i> 1st Semester E-Portfolio
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                        Technology for Teaching & Learning
+                    </h1>
+                    
+                    <p class="text-slate-300 text-base leading-relaxed">
+                        Compiling all 1st Semester academic outputs across <strong>Prelims</strong>, <strong>Midterm</strong>, and <strong>Finals</strong>—including Teaching & Learning Activities (TLAs), Assessment Tasks (ATs), and the capstone synthesis paper.
+                    </p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-800 text-xs">
+                        <div>
+                            <span class="block text-slate-500 uppercase font-mono">Student</span>
+                            <span class="font-bold text-slate-200">Tan, Kyle</span>
+                        </div>
+                        <div>
+                            <span class="block text-slate-500 uppercase font-mono">Program</span>
+                            <span class="font-bold text-slate-200">BS Information Technology</span>
+                        </div>
+                        <div>
+                            <span class="block text-slate-500 uppercase font-mono">Institution</span>
+                            <span class="font-bold text-slate-200">UIC (Davao City)</span>
+                        </div>
+                        <div>
+                            <span class="block text-slate-500 uppercase font-mono">Status</span>
+                            <span class="font-bold text-brand-400">1st Semester Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Term Directory Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Prelims -->
+                <div onclick="navigateTo('prelims')" class="cursor-pointer group bg-slate-800/40 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-base">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </span>
+                        <span class="text-xs font-mono text-slate-500">5 Items</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-amber-300">1. Prelims Output Suite</h3>
+                    <p class="text-xs text-slate-400 mt-2">
+                        Learning Styles (TLA1), Philosophy of Teaching (TLA2), Assessment Tasks 1 & 2, and TLA #3 Reflection Paper.
+                    </p>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-amber-400 font-semibold flex items-center justify-between">
+                        <span>View Prelims Suite</span> &rarr;
+                    </div>
+                </div>
+
+                <!-- Midterm -->
+                <div onclick="navigateTo('midterm')" class="cursor-pointer group bg-slate-800/40 hover:bg-slate-800 border border-slate-800 hover:border-teal-500/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold text-base">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </span>
+                        <span class="text-xs font-mono text-slate-500">6 Items</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-teal-300">2. Midterm Output Suite</h3>
+                    <p class="text-xs text-slate-400 mt-2">
+                        Translating Learning Principles (TLA1), Formulating Objectives (AT1), Content Organization (AT2), Sequence Critique (TLA2), Strategy Selection (TLA3), & Drafting Blueprint (TLA4).
+                    </p>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-teal-400 font-semibold flex items-center justify-between">
+                        <span>View Midterms Suite</span> &rarr;
+                    </div>
+                </div>
+
+                <!-- Finals -->
+                <div onclick="navigateTo('finals')" class="cursor-pointer group bg-slate-800/40 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-base">
+                            <i class="fa-solid fa-trophy"></i>
+                        </span>
+                        <span class="text-xs font-mono text-slate-500">4 Items</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-indigo-300">3. Final Output Suite</h3>
+                    <p class="text-xs text-slate-400 mt-2">
+                        Instructional Material Design (TLA1), Philosophy of Classroom Assessment (TLA2), Classroom Management Plan (TLA3), and Final Reflection (TLA4).
+                    </p>
+                    <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-indigo-400 font-semibold flex items-center justify-between">
+                        <span>View Finals Suite</span> &rarr;
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: PRELIMS ================= -->
+        <section id="page-prelims" class="page-section hidden space-y-8">
+            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono text-amber-400 uppercase tracking-wider">1st Semester • Phase 1</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-1">Prelims Learning Outputs</h2>
+                    <p class="text-xs text-slate-400 mt-1">Complete compilation of 5 Prelim outputs with artifact links.</p>
+                </div>
+                <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono rounded-full self-start md:self-auto">5 Items Completed</span>
+            </div>
+
+            <div id="prelims-cards-container" class="space-y-4"></div>
+        </section>
+
+        <!-- ================= PAGE 3: MIDTERM ================= -->
+        <section id="page-midterm" class="page-section hidden space-y-8">
+            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono text-teal-400 uppercase tracking-wider">1st Semester • Phase 2</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-1">Midterm Learning Outputs</h2>
+                    <p class="text-xs text-slate-400 mt-1">Complete compilation of 6 Midterm outputs and blueprints.</p>
+                </div>
+                <span class="px-3 py-1 bg-teal-500/10 text-teal-400 border border-teal-500/30 text-xs font-mono rounded-full self-start md:self-auto">6 Items Completed</span>
+            </div>
+
+            <div id="midterm-cards-container" class="space-y-4"></div>
+        </section>
+
+        <!-- ================= PAGE 4: FINALS ================= -->
+        <section id="page-finals" class="page-section hidden space-y-8">
+            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono text-indigo-400 uppercase tracking-wider">1st Semester • Phase 3</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-1">Final Term Learning Outputs</h2>
+                    <p class="text-xs text-slate-400 mt-1">Instructional materials, assessment philosophy, and management plans.</p>
+                </div>
+                <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-mono rounded-full self-start md:self-auto">4 Items Completed</span>
+            </div>
+
+            <div id="finals-cards-container" class="space-y-4"></div>
+        </section>
+
+        <!-- ================= PAGE 5: COMPREHENSIVE ESSAY ================= -->
+        <section id="page-reflection" class="page-section hidden space-y-10">
+            <div class="border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono text-brand-400 uppercase tracking-widest">End-of-Course Capstone Essay</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Comprehensive Reflection Essay</h2>
+                    <p class="text-sm text-slate-400 mt-2 max-w-3xl">
+                        Synthesizing personal growth, pedagogical insights, technology integration, and career readiness as an Information Technology student.
+                    </p>
+                </div>
+                <button onclick="window.print()" class="no-print self-start md:self-auto px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-file-pdf"></i> Export Essay
+                </button>
+            </div>
+
+            <div class="bg-slate-800/40 border border-slate-800 rounded-3xl p-6 sm:p-10 space-y-10 print-full-width shadow-xl">
+                <div class="border-b border-slate-700/80 pb-6 text-center space-y-2">
+                    <span class="text-xs font-mono text-brand-400 uppercase tracking-wider">University of the Immaculate Conception • BSIT Department</span>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
+                        Transforming Technology into Pedagogy: An IT Student's Synthesis of Learning, Ethics, and System Engineering
+                    </h3>
+                    <div class="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400 font-mono pt-2">
+                        <span class="text-slate-200 font-bold"><i class="fa-solid fa-user-graduate text-brand-400 mr-1"></i> Tan, Kyle</span>
+                        <span>•</span>
+                        <span>BS Information Technology</span>
+                        <span>•</span>
+                        <span>1st Semester SY 2025-2026</span>
+                    </div>
+                </div>
+
+                <!-- Prompt 1 -->
+                <div class="space-y-4">
+                    <h4 class="text-lg font-bold text-amber-400 flex items-start gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 font-mono text-sm border border-amber-500/30 flex-shrink-0 mt-0.5">01</span>
+                        How has this subject helped you as an IT/CS student?
+                    </h4>
+                    <div class="text-slate-300 text-sm leading-relaxed pl-0 sm:pl-11 space-y-3">
+                        <p>
+                            As an Information Technology student, my prior academic focus revolved primarily around hard technical skills—syntax design, database normalization, script execution, and back-end logic. Studying <em>Technology for Teaching and Learning</em> provided a transformative counterweight by shifting my engineering focus toward the human dimension of computer science.
+                        </p>
+                        <p>
+                            This subject expanded my understanding of how software systems interact with human cognition. By analyzing learning styles, Bloom's taxonomies, and pedagogical models across Prelims, Midterm, and Finals, I realized that software is not built in a vacuum; it exists to facilitate human understanding, streamline communication, and solve real-world user problems. It helped me evaluate technology tools not merely by their code efficiency, but by their usability, cognitive alignment, and accessibility for diverse user groups.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Prompt 2 -->
+                <div class="space-y-4">
+                    <h4 class="text-lg font-bold text-teal-400 flex items-start gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-400 font-mono text-sm border border-teal-500/30 flex-shrink-0 mt-0.5">02</span>
+                        What significant knowledge, skills, attitudes, or values have you gained from the subject?
+                    </h4>
+                    <div class="text-slate-300 text-sm leading-relaxed pl-0 sm:pl-11 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold font-mono text-brand-400 block"><i class="fa-solid fa-lightbulb mr-1"></i> Core Knowledge</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Mastered content sequencing algorithms, revised Bloom’s taxonomy objectives, WCAG web accessibility guidelines, and structural instructional blueprinting.
+                                </p>
+                            </div>
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold font-mono text-teal-400 block"><i class="fa-solid fa-wrench mr-1"></i> Technical & Analytical Skills</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Proficiency in drafting system blueprints, authoring clear user stories/acceptance criteria, auditing UI for cognitive overload, and designing interactive tools.
+                                </p>
+                            </div>
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold font-mono text-indigo-400 block"><i class="fa-solid fa-heart mr-1"></i> Values & Professional Ethics</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    A strong commitment to digital inclusion, empathy for users with varying technological literacy, user data privacy, and ethical software development.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt 3 -->
+                <div class="space-y-4">
+                    <h4 class="text-lg font-bold text-indigo-400 flex items-start gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-mono text-sm border border-indigo-500/30 flex-shrink-0 mt-0.5">03</span>
+                        How can you apply what you have learned to your academic life, future workplace, and professional responsibilities?
+                    </h4>
+                    <div class="text-slate-300 text-sm leading-relaxed pl-0 sm:pl-11 space-y-3">
+                        <p>
+                            The methodologies gained throughout this subject provide a direct framework across three key areas of my ongoing development:
+                        </p>
+                        <ul class="space-y-3 text-xs sm:text-sm">
+                            <li class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/80">
+                                <strong class="text-white block mb-1 font-mono text-brand-300"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Academic Life & Research:</strong>
+                                I will apply the blueprinting methods (Midterm TLA4) and measurable outcome formulation (AT1) to my Senior Capstone project documentation. It will ensure our software specifications, Data Flow Diagrams (DFDs), and test cases are structured with academic precision.
+                            </li>
+                            <li class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/80">
+                                <strong class="text-white block mb-1 font-mono text-teal-300"><i class="fa-solid fa-briefcase mr-1.5"></i> Future Workplace Collaboration:</strong>
+                                In IT enterprises, software engineers must communicate with non-technical stakeholders. My training in content breakdown and presentation strategies will enable me to bridge the gap between technical software teams and non-technical clients.
+                            </li>
+                            <li class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/80">
+                                <strong class="text-white block mb-1 font-mono text-indigo-300"><i class="fa-solid fa-shield-halved mr-1.5"></i> Professional Responsibilities:</strong>
+                                As a future developer, I will enforce accessibility guidelines, ensure complete compliance with data privacy standards, and conduct rigorous usability testing prior to deployment.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Prompt 4 -->
+                <div class="space-y-4">
+                    <h4 class="text-lg font-bold text-amber-400 flex items-start gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 font-mono text-sm border border-amber-500/30 flex-shrink-0 mt-0.5">04</span>
+                        How has this subject influenced or helped you develop your future career path?
+                    </h4>
+                    <div class="text-slate-300 text-sm leading-relaxed pl-0 sm:pl-11 space-y-3">
+                        <p>
+                            Prior to taking this subject, I targeted general software development without a specific sector focus. Completing tasks like designing interactive instructional materials (Finals TLA1) and critiquing strategy selections (Midterm TLA3) highlighted the high demand for specialized technology professionals in educational technology (EdTech) and enterprise Systems Analysis.
+                        </p>
+                        <p>
+                            This course inspired me to target roles as a <strong>Systems Analyst</strong> or <strong>EdTech Software Architect</strong>. I plan to specialize in building cloud-integrated LMS solutions, mobile educational tools for low-bandwidth environments, and intuitive enterprise dashboards designed around ergonomic human-computer interaction (HCI) standards.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Prompt 5 -->
+                <div class="space-y-4">
+                    <h4 class="text-lg font-bold text-emerald-400 flex items-start gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-mono text-sm border border-emerald-500/30 flex-shrink-0 mt-0.5">05</span>
+                        What specific lessons from this subject will you carry with you as a future IT/CS professional?
+                    </h4>
+                    <div class="text-slate-300 text-sm leading-relaxed pl-0 sm:pl-11 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/60 space-y-1">
+                                <span class="font-bold text-white text-xs block font-mono text-emerald-400"><i class="fa-solid fa-universal-access mr-1.5"></i> 1. Accessibility is Non-Negotiable</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Software built without accessibility excludes users. Systems must be engineered to accommodate diverse abilities, visual needs, and devices from inception.
+                                </p>
+                            </div>
+                            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/60 space-y-1">
+                                <span class="font-bold text-white text-xs block font-mono text-emerald-400"><i class="fa-solid fa-compass-drafting mr-1.5"></i> 2. Blueprint Before Writing Code</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Drafting structural blueprints, sequence critiques, and objectives prevents costly re-engineering and delivers stable software products.
+                                </p>
+                            </div>
+                            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/60 space-y-1">
+                                <span class="font-bold text-white text-xs block font-mono text-emerald-400"><i class="fa-solid fa-eye mr-1.5"></i> 3. Cognitive Ergonomics First</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    A successful UI avoids overwhelming the user's mental workload by structuring content sequentially, logically, and predictably.
+                                </p>
+                            </div>
+                            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700/60 space-y-1">
+                                <span class="font-bold text-white text-xs block font-mono text-emerald-400"><i class="fa-solid fa-rotate mr-1.5"></i> 4. Continuous Iteration & Assessment</span>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Continuous formative assessment loops drive ongoing quality assurance, bug fixing, and continuous software refinement.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sign-off -->
+                <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+                    <div class="space-y-1">
+                        <span class="block font-bold text-slate-100 text-sm">Tan, Kyle</span>
+                        <span class="block text-slate-400">BSIT Student Researcher • Systems & EdTech Analysis</span>
+                        <span class="block text-brand-400">University of the Immaculate Conception</span>
+                    </div>
+                    <div class="font-mono text-right space-y-1">
+                        <span class="block text-slate-300 font-bold">1st Semester Academic Portfolio</span>
+                        <span class="block text-slate-500">Submitted in partial fulfillment of course requirements</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="no-print border-t border-slate-800 bg-slate-950 py-6 text-slate-400 text-xs mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Tan, Kyle E-Portfolio • BSIT University of the Immaculate Conception</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="navigateTo('home')" class="hover:text-white">Home</button>
+                <button onclick="navigateTo('prelims')" class="hover:text-white">Prelims</button>
+                <button onclick="navigateTo('midterm')" class="hover:text-white">Midterm</button>
+                <button onclick="navigateTo('finals')" class="hover:text-white">Finals</button>
+                <button onclick="navigateTo('reflection')" class="hover:text-white">Essay</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Business Logic -->
+    <script>
+        // Owner Security State & PIN Key (Secret: 0723)
+        let isAdminUnlocked = false;
+        const OWNER_PIN = '0723';
+
+        // 15 OUTPUT DELIVERABLES SUITE
+        const portfolioData = {
+            prelims: [
+                {
+                    id: 'prelim-1',
+                    code: 'TLA 1',
+                    title: 'Learning Styles (The Learner)',
+                    desc: 'Investigation of VARK (Visual, Auditory, Reading/Writing, Kinesthetic) learning modalities and digital interface adaptation.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'prelim-2',
+                    code: 'TLA 2',
+                    title: 'Philosophy of Teaching & Professional Reflection Paper',
+                    desc: 'Synthesis paper on educational philosophy, teacher ethics, data privacy (RA 10173), and technology-driven pedagogy.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'prelim-3',
+                    code: 'AT 1',
+                    title: 'Assessment Task 1 - Diagnostic Evaluation',
+                    desc: 'Baseline diagnostic assessment evaluating technological literacy and instructional tool proficiency in computer environments.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'prelim-4',
+                    code: 'AT 2',
+                    title: 'Assessment Task 2 - Technology Integration Analysis',
+                    desc: 'Comparative evaluation of learning platforms (LMS), evaluating user role permissions, APIs, and module structures.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'prelim-5',
+                    code: 'TLA #3',
+                    title: 'Reflection Paper - Prelim Synthesis',
+                    desc: 'Synthesis paper summarizing foundational growth, ethical standards, and technology integration across the Prelim period.',
+                    defaultLink: ''
+                }
+            ],
+            midterm: [
+                {
+                    id: 'midterm-1',
+                    code: 'TLA #1',
+                    title: 'Translating Learning Principles into Educational Technology Solutions',
+                    desc: 'Engineering digital solutions aligned with Gagne\'s Nine Events of Instruction for cognitive interface design.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'midterm-2',
+                    code: 'AT 1',
+                    title: 'Formulating Learning Objectives',
+                    desc: 'Authoring measurable, technical learning outcomes using Revised Bloom\'s Taxonomy verb structures.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'midterm-3',
+                    code: 'AT 2',
+                    title: 'Content Organization and Sequencing Task',
+                    desc: 'Structuring complex subject domain topics into logical, prerequisite-driven module flows.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'midterm-4',
+                    code: 'TLA 2',
+                    title: 'Content Analysis and Sequence Critique',
+                    desc: 'Critical audit of existing educational module sequences to identify pedagogical flaws and user experience gaps.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'midterm-5',
+                    code: 'TLA 3',
+                    title: 'Strategy Selection Analysis',
+                    desc: 'Evaluating multimedia technologies and web software stacks for optimal engagement and low-bandwidth delivery.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'midterm-6',
+                    code: 'TLA 4',
+                    title: 'Drafting your Blueprint',
+                    desc: 'Authoring a comprehensive technical software and instructional blueprint prior to system building.',
+                    defaultLink: ''
+                }
+            ],
+            finals: [
+                {
+                    id: 'finals-1',
+                    code: 'TLA 1 Finals',
+                    title: 'Design an Instructional Material',
+                    desc: 'Development of an accessible, highly interactive digital instructional web application with WCAG compliance.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'finals-2',
+                    code: 'TLA #2',
+                    title: 'My Philosophy of Classroom Assessment',
+                    desc: 'Position paper detailing balanced continuous assessment strategies and automated grading metrics in IT education.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'finals-3',
+                    code: 'TLA #3',
+                    title: 'Classroom Management Plan',
+                    desc: 'Formulating operational management protocols for IT laboratories, hardware maintenance, security, and digital citizenship.',
+                    defaultLink: ''
+                },
+                {
+                    id: 'finals-4',
+                    code: 'TLA 4',
+                    title: 'Final Reflection',
+                    desc: 'End-of-subject synthesis paper evaluating overall academic progress and long-term integration into IT engineering roles.',
+                    defaultLink: ''
+                }
+            ]
+        };
+
+        let currentActiveItemForModal = null;
+
+        // Render Cards
+        function renderTermCards(termKey, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+
+            const items = portfolioData[termKey];
+            items.forEach((item) => {
+                const savedLink = localStorage.getItem('link_' + item.id) || item.defaultLink;
+                const hasValidLink = savedLink && savedLink.trim() !== '' && savedLink !== '#';
+
+                const card = document.createElement('div');
+                card.className = 'bg-slate-800/50 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4';
+                
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded bg-brand-500/20 text-brand-300 text-xs font-mono font-semibold">${item.code}</span>
+                            <span class="text-xs text-slate-400 capitalize"><i class="fa-regular fa-folder mr-1"></i> ${termKey} Term</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">${item.title}</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">${item.desc}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-shrink-0 self-start md:self-auto">
+                        <a href="${hasValidLink ? savedLink : '#'}" target="${hasValidLink ? '_blank' : '_self'}" id="btn-open-${item.id}" class="${hasValidLink ? 'bg-brand-600 hover:bg-brand-500 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-400'} px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-700 transition-colors flex items-center gap-1.5" ${!hasValidLink ? 'onclick="event.preventDefault(); handleFileOpenClick(\'' + item.id + '\')"' : ''}>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> ${hasValidLink ? 'Open File / Artifact' : 'No Link Attached'}
+                        </a>
+                        ${isAdminUnlocked ? `
+                            <button onclick="openLinkModal('${item.id}')" class="px-3.5 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-semibold rounded-xl border border-amber-500/40 transition-colors flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit Link
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Security Lock Logic
+        function handleAdminLockToggle() {
+            if (isAdminUnlocked) {
+                isAdminUnlocked = false;
+                updateAdminUiState();
+            } else {
+                document.getElementById('adminPinInput').value = '';
+                document.getElementById('pinErrorMsg').classList.add('hidden');
+                document.getElementById('adminPinModal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
+            }
+        }
+
+        function closeAdminPinModal() {
+            document.getElementById('adminPinModal').classList.add('hidden');
+        }
+
+        function verifyAdminPin() {
+            const inputPin = document.getElementById('adminPinInput').value.trim();
+            if (inputPin === OWNER_PIN) {
+                isAdminUnlocked = true;
+                closeAdminPinModal();
+                updateAdminUiState();
+            } else {
+                document.getElementById('pinErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function updateAdminUiState() {
+            const lockIcon = document.getElementById('adminLockIcon');
+            const lockText = document.getElementById('adminLockText');
+            const lockBtn = document.getElementById('adminLockBtn');
+            const exportBtn = document.getElementById('exportLinksBtn');
+
+            if (isAdminUnlocked) {
+                lockIcon.className = 'fa-solid fa-lock-open text-emerald-400';
+                lockText.innerText = 'Owner Unlocked';
+                lockBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold transition-colors';
+                if (exportBtn) exportBtn.classList.remove('hidden');
+            } else {
+                lockIcon.className = 'fa-solid fa-lock text-amber-400';
+                lockText.innerText = 'Owner Access';
+                lockBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold hover:bg-amber-500/20 transition-colors';
+                if (exportBtn) exportBtn.classList.add('hidden');
+            }
+
+            renderTermCards('prelims', 'prelims-cards-container');
+            renderTermCards('midterm', 'midterm-cards-container');
+            renderTermCards('finals', 'finals-cards-container');
+        }
+
+        function handleFileOpenClick(itemId) {
+            if (isAdminUnlocked) {
+                openLinkModal(itemId);
+            } else {
+                alert('No document file link has been attached to this deliverable yet. Switch to Owner Access to attach your Google Drive or PDF link.');
+            }
+        }
+
+        // Link Edit Modal
+        function openLinkModal(itemId) {
+            if (!isAdminUnlocked) {
+                handleAdminLockToggle();
+                return;
+            }
+
+            currentActiveItemForModal = itemId;
+            let itemObj = null;
+            
+            ['prelims', 'midterm', 'finals'].forEach(term => {
+                const found = portfolioData[term].find(i => i.id === itemId);
+                if (found) itemObj = found;
+            });
+
+            if (itemObj) {
+                document.getElementById('modalOutputTitle').innerText = `${itemObj.code}: ${itemObj.title}`;
+                const saved = localStorage.getItem('link_' + itemId) || itemObj.defaultLink || '';
+                document.getElementById('modalUrlInput').value = saved;
+                document.getElementById('linkModal').classList.remove('hidden');
+            }
+        }
+
+        function closeLinkModal() {
+            document.getElementById('linkModal').classList.add('hidden');
+            currentActiveItemForModal = null;
+        }
+
+        function saveCustomLink() {
+            if (!currentActiveItemForModal) return;
+            const url = document.getElementById('modalUrlInput').value.trim();
+            
+            if (url) {
+                localStorage.setItem('link_' + currentActiveItemForModal, url);
+            } else {
+                localStorage.removeItem('link_' + currentActiveItemForModal);
+            }
+
+            closeLinkModal();
+            renderTermCards('prelims', 'prelims-cards-container');
+            renderTermCards('midterm', 'midterm-cards-container');
+            renderTermCards('finals', 'finals-cards-container');
+        }
+
+        // Backup Export
+        function exportLinksBackup() {
+            let linksMap = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('link_')) {
+                    linksMap[key] = localStorage.getItem(key);
+                }
+            }
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(linksMap, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "kyle_tan_eportfolio_links.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // Navigation Controller
+        function navigateTo(pageId) {
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.add('hidden'));
+
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+            });
+
+            const activeBtn = document.getElementById('nav-' + pageId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-md');
+                activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-800');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileNav() {
+            document.getElementById('mobileNav').classList.toggle('hidden');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeBtn = document.getElementById('themeToggle');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                document.body.classList.remove('bg-slate-900', 'text-slate-100');
+                document.body.classList.add('bg-slate-50', 'text-slate-900');
+                themeBtn.innerHTML = '<i class="fa-solid fa-moon text-lg text-slate-700"></i>';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                document.body.classList.remove('bg-slate-50', 'text-slate-900');
+                document.body.classList.add('bg-slate-900', 'text-slate-100');
+                themeBtn.innerHTML = '<i class="fa-solid fa-sun text-lg text-amber-400"></i>';
+            }
+        }
+
+        // Search Controller
+        function toggleSearchModal() {
+            const searchModal = document.getElementById('searchModal');
+            searchModal.classList.toggle('hidden');
+            if (!searchModal.classList.contains('hidden')) {
+                document.getElementById('searchInput').focus();
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '';
+
+            if (query === '') {
+                resultsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-4">Start typing to search outputs...</p>';
+                return;
+            }
+
+            let matches = [];
+            ['prelims', 'midterm', 'finals'].forEach(term => {
+                portfolioData[term].forEach(item => {
+                    if (item.title.toLowerCase().includes(query) || item.code.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)) {
+                        matches.push({ ...item, term });
+                    }
+                });
+            });
+
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">No matching outputs found.</p>';
+                return;
+            }
+
+            matches.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'p-3 rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700 cursor-pointer transition-colors flex items-center justify-between';
+                card.onclick = () => {
+                    toggleSearchModal();
+                    navigateTo(item.term);
+                };
+                card.innerHTML = `
+                    <div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 font-semibold">${item.code} (${item.term})</span>
+                        <h5 class="text-xs font-bold text-white mt-1">${item.title}</h5>
+                        <p class="text-[11px] text-slate-400">${item.desc}</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        // App Initialization
+        window.onload = function() {
+            renderTermCards('prelims', 'prelims-cards-container');
+            renderTermCards('midterm', 'midterm-cards-container');
+            renderTermCards('finals', 'finals-cards-container');
+            navigateTo('home');
+        };
+    </script>
+</body>
+</html>
+```
